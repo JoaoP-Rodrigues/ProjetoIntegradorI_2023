@@ -5,7 +5,7 @@ class DataBase:
 
     def create_connection(self):
         try:
-            path_bd = r'C:\Users\joao_\OneDrive\Documentos2\UNIVESP\04 - Semestre\PI\Projeto_Repositorio\ProjetoIntegradorI_2023\DataBase\Banco_PI.db'
+            path_bd = r'C:/Users/joao_/OneDrive/Documentos2/UNIVESP/04 - Semestre/PI/Projeto_Repositorio/ProjetoIntegradorI_2023/DataBase/Banco_PI.db'
             self.conn = sqlite3.connect(path_bd)
             self.cur = self.conn.cursor()
         except Error as e:
@@ -30,3 +30,5 @@ class DataBase:
         query = f'INSERT INTO USUARIOS_ADM {chaves} VALUES (?, ?, ?, ?, ?)'
         self.cur.execute(query, values)
         self.conn.commit()
+
+

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <title>Meu primeiro site :D</title>
+    </head>
+    <body>
+        Aprovado ou Reprovado
+
+        <div>
+            <form method="get">
+                CEP:
+                <input type="text" name="cep">
+                <br>
+                <input type="submit" value="Enviar">
+            </form>
+        </div>
+
+        {% if resultado %}
+        <div>
+            {{resultado}} com média {{media}}!!!
+        </div>
+        {% endif %}
+
+    </body>
+</html>
