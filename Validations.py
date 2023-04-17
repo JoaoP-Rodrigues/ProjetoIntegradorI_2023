@@ -38,6 +38,11 @@ class Validations:
     def valida_cep(cep):
         try:
             address = pycep_correios.get_address_from_cep('37503-130', webservice=pycep_correios.WebService.APICEP)
+            cidade = address['cidade']
+            if cidade.upper() == 'VALINHOS':
+                return True
+            else:
+                return False
 
         except pycep_correios.exceptions.InvalidCEP as eic:
             print(eic)
