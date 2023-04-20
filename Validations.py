@@ -37,7 +37,7 @@ class Validations:
     @staticmethod
     def valida_cep(cep):
         try:
-            address = pycep_correios.get_address_from_cep('37503-130', webservice=pycep_correios.WebService.APICEP)
+            address = pycep_correios.get_address_from_cep(cep, webservice=pycep_correios.WebService.APICEP)
             cidade = address['cidade']
             if cidade.upper() == 'VALINHOS':
                 return True
@@ -45,20 +45,20 @@ class Validations:
                 return False
 
         except pycep_correios.exceptions.InvalidCEP as eic:
-            print(eic)
+            return eic
 
         except pycep_correios.exceptions.CEPNotFound as ecnf:
-            print(ecnf)
+            return ecnf
 
         except pycep_correios.exceptions.ConnectionError as errc:
-            print(errc)
+            return errc
 
         except pycep_correios.exceptions.Timeout as errt:
-            print(errt)
+            return errt
 
         except pycep_correios.exceptions.HTTPError as errh:
-            print(errh)
+            return errh
 
         except pycep_correios.exceptions.BaseException as e:
-            print(e)
+            return e
 

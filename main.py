@@ -1,14 +1,10 @@
 import sqlite3
 from Databases import DataBase
+from datetime import datetime
 
-'''obj = DataBase()
-obj.create_connection()
-post = ('12345678910', 'Joao Paulo', '13272999', 'Rua Fulano da Silva, 350', '19988997766', '11223344@aluno.univesp.br')
-tabela = 'INSCRICOES'
-obj.insert_inscritos(post)'''
-
-from flask import Flask,  render_template
+from flask import Flask,  render_template, request
 import os
+from Validations import *
 
 app = Flask(__name__)
 
@@ -20,6 +16,39 @@ def index():
 @app.route('/about')
 def about():
     return render_template('about.html')
+
+
+@app.route('/inscricao')
+def inscricao():
+    return render_template('form_inscricao.html')
+
+
+@app.route('/valida-cep', methods=['POST'])
+def process_form():
+    cep = request.form['cep']
+    validacao = Validations.valida_cep(cep)
+    if validacao:
+        return inscricao()
+    else:
+        return 'Incrição permitida somente para moradores da cidade de Valinhos.'
+
+
+@app.route('/submit', methods=['POST'])
+def submit():
+    cep = request.form['cep']
+    cpf = request.form['cpf']
+    name = request.form['nome']
+    born = request.form['nascimento']
+    address = request.form['endereco']
+    phone = request.form['telefone']
+    email = request.form['email']
+    obj = DataBase()
+    obj.create_connection()
+    protocol = str(datetime.now())
+
+    post = (cpf, name, born, cep, address, phone, cpf, email, protocol)
+    tabela = 'INSCRICOES'
+    obj.insert_inscritos(post)
 
 
 if __name__ == '__main__':
