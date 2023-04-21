@@ -6,9 +6,9 @@
 </head>
 <body>
     <div id="resultado">
-        <h1>Validação do CEP</h1>
+        <h1>Validação de CPF</h1>
         <form id="init-form">
-            <input type="text" name="cep" placeholder="CEP">
+            <input type="text" name="cpf" placeholder="CPF">
             <button type="submit">Enviar</button>
         </form>
     </div>
@@ -18,7 +18,7 @@
             $('#init-form').submit(function(event) {
                 event.preventDefault();
                 $.ajax({
-                    url: '/valida-cep',
+                    url: '/valida_cpf',
                     type: 'POST',
                     data: $('#init-form').serialize(),
                     success: function(response) {

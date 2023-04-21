@@ -10,12 +10,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return render_template('index.html')
-
-
-@app.route('/about')
-def about():
-    return render_template('about.html')
+    return render_template('form_inscricao.html')
 
 
 @app.route('/inscricao')
@@ -23,14 +18,36 @@ def inscricao():
     return render_template('form_inscricao.html')
 
 
-@app.route('/valida-cep', methods=['POST'])
-def process_form():
+@app.route('/form_cpf')
+def form_cpf():
+    return render_template('form_cpf.html')
+
+
+@app.route('/valida-cep/<cep>', methods=['GET', 'POST'])
+def valida_cep(cep):
     cep = request.form['cep']
+    print(cep)
     validacao = Validations.valida_cep(cep)
-    if validacao:
-        return inscricao()
-    else:
-        return 'Incrição permitida somente para moradores da cidade de Valinhos.'
+    print(validacao)
+    return 'True' if validacao else 'False'
+        #return form_cpf()
+        #return True
+    #else:
+        #return False
+        #return index()
+
+@app.route('/valida_cpf/<cpf>')
+#@app.route('/valida_cpf/<cpf>', methods=['GET', 'POST'])
+def valida_cpf(cpf):
+    #cpf = request.form['cpf']
+    print(cpf)
+    validacao = Validations.valida_cpf(cpf)
+    print(validacao)
+    return 'True' if validacao else 'False'
+    #if validacao:
+    #    return inscricao()
+    #else:
+    #    return index()
 
 
 @app.route('/submit', methods=['POST'])
@@ -42,12 +59,12 @@ def submit():
     address = request.form['endereco']
     phone = request.form['telefone']
     email = request.form['email']
+    turma = request.form['turma']
+
     obj = DataBase()
     obj.create_connection()
     protocol = str(datetime.now())
-
-    post = (cpf, name, born, cep, address, phone, cpf, email, protocol)
-    tabela = 'INSCRICOES'
+    post = (cpf, name, born, cep, address, phone, cpf, email, turma, protocol)
     obj.insert_inscritos(post)
 
 

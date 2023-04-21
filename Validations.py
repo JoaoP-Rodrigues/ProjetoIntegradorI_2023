@@ -1,9 +1,11 @@
 import sqlite3
 import sqlalchemy
-#from pycep_correios import get_address_from_cep, WebService, exceptions
+from pycep_correios import get_address_from_cep, WebService, exceptions
 import pycep_correios
+from Databases import DataBase
 
 class Validations:
+
     @staticmethod
     def cpf_validate(cpfNotValidate):
         try:
@@ -24,12 +26,26 @@ class Validations:
 
 
     @staticmethod
-    def check_cpf_db(cpf_user, cursor):
+    def check_cpf_db(cpf_user):
+        obj = DataBase()
+        obj.create_connection()
+
         query = f'SELECT CPF FROM INSCRICOES WHERE CPF = "{cpf_user}"'
-        cursor.execute(query)
-        resultado = cursor.fetchall()
+        obj.cur.execute(query)
+        resultado = obj.cur.fetchall()
         if len(resultado) != 0:
+            return False
+        else:
             return True
+
+
+    @staticmethod
+    def valida_cpf(cpf_user):
+        if Validations.cpf_validate(cpf_user):
+            if Validations.check_cpf_db(cpf_user):
+                return True
+            else:
+                return False
         else:
             return False
 
