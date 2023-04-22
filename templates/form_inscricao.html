@@ -10,12 +10,12 @@
       <div class="container">
         <h1 class="logo">Preencha todas as informações!</h1>
             <form id="inscricao-form" action="{{ url_for('submit') }}" method="POST">
-                <input type="text" id="cep" name="cep" placeholder="CEP Residencial"></br></br>
-                <input type="text" id="cpf" name="cpf" placeholder="CPF"></br></br>
+                <input type="text" maxlength="8" id="cep" name="cep" placeholder="CEP Residencial"></br></br>
+                <input type="text" maxlength="11" id="cpf" name="cpf" placeholder="CPF"></br></br>
                 <input type="text" name="nome" placeholder="Nome Completo"></br></br>
                 <input type="date" id="nascimento" name="nascimento" placeholder="Data de Nascimento"></br></br>
                 <input type="text" name="endereco" placeholder="Endereço: Rua/Av, Nº, Bairro"></br></br>
-                <input type="text" name="telefone" placeholder="Telefone"></br></br>
+                <input type="text" maxlength="11" name="telefone" placeholder="Telefone com DDD"></br></br>
                 <input type="text" name="email" placeholder="Email"></br></br>
                 <div id="turma_select_div">
                     <select id="turma_select" name="turma_select">
@@ -27,23 +27,17 @@
 
             <script>
                 document.getElementById("cep").addEventListener("change", function() {
-                  var xhr = new XMLHttpRequest();
-                  xhr.open("GET", "/validar_cep/" + this.value);
-                  xhr.onload = function() {
-                    if (xhr.status === 200) {
-                      if (xhr.responseText === "False") {
-                        alert("Inscrição permitida somente para moradores da Cidade de Valinhos!");
-                      }
-                    }
-                  };
-                  xhr.send();
+                  let cep_digitado = parseInt(this.value);
+                  if (cep_digitado < 13270000 || cep_digitado >= 13280000){
+                      alert("Inscrição permitida somente para moradores da Cidade de Valinhos!");
+                      this.value='';
+                  }
                 });
                 document.getElementById("cpf").addEventListener("change", function() {
                   var xhr = new XMLHttpRequest();
                   xhr.open("GET", "/validar_cpf/" + this.value);
                   xhr.onload = function() {
                     if (xhr.status === 200) {
-                      alert(xhr.responseText);
                       if (xhr.responseText === "False") {
                         alert("Esse CPF NÃO é válido ou já foi usado em uma inscrição!");
                       }
@@ -57,6 +51,7 @@
 
                   if (idade < 7) {
                     alert("Não é permitida a Incrição de Menores de 7 anos!");
+                    this.value='';
                     return;
                   }
 

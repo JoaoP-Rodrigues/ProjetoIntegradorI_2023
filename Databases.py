@@ -1,5 +1,7 @@
 import sqlite3
 from sqlite3 import Error
+import pandas as pd
+
 
 class DataBase:
 
@@ -21,7 +23,7 @@ class DataBase:
 
     def insert_inscritos(self, values):
         chaves = self.get_schema('INSCRICOES')
-        query = f'INSERT INTO INSCRICOES {chaves} VALUES (?, ?, ?, ?, ?, ?)'
+        query = f'INSERT INTO INSCRICOES {chaves} VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
         self.cur.execute(query, values)
         self.conn.commit()
 
@@ -31,4 +33,5 @@ class DataBase:
         self.cur.execute(query, values)
         self.conn.commit()
 
-
+    def query_read(self, query):
+        return pd.read_sql_query(query, self.conn)

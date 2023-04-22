@@ -23,12 +23,10 @@ def form_cpf():
     return render_template('form_cpf.html')
 
 
-@app.route('/valida-cep/<cep>', methods=['GET', 'POST'])
+@app.route('/valida-cep/<cep>')
 def valida_cep(cep):
-    cep = request.form['cep']
-    print(cep)
+    #cep = request.form['cep']
     validacao = Validations.valida_cep(cep)
-    print(validacao)
     return 'True' if validacao else 'False'
         #return form_cpf()
         #return True
@@ -64,7 +62,7 @@ def submit():
     obj = DataBase()
     obj.create_connection()
     protocol = str(datetime.now())
-    post = (cpf, name, born, cep, address, phone, cpf, email, turma, protocol)
+    post = (cpf, name, born, cep, address, phone, email, turma, protocol)
     obj.insert_inscritos(post)
 
 
