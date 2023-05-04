@@ -1,100 +1,198 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="PT-BR" dir="ltr">
- <head>
-   <meta charset="utf-8">
-   <title>Formulário de Inscrição</title>
-   <link rel="stylesheet" href="{{ url_for('static',     filename='css/template.css') }}">
- </head>
- <body>
-    <header>
-      <div class="container">
-        <h1 class="logo">Preencha todas as informações!</h1>
-            <form id="inscricao-form" action="{{ url_for('submit') }}" method="POST">
-                <input type="text" maxlength="8" id="cep" name="cep" placeholder="CEP Residencial"></br></br>
-                <input type="text" maxlength="11" id="cpf" name="cpf" placeholder="CPF"></br></br>
-                <input type="text" name="nome" placeholder="Nome Completo"></br></br>
-                <input type="date" id="nascimento" name="nascimento" placeholder="Data de Nascimento"></br></br>
-                <input type="text" name="endereco" placeholder="Endereço: Rua/Av, Nº, Bairro"></br></br>
-                <input type="text" maxlength="11" name="telefone" placeholder="Telefone com DDD"></br></br>
-                <input type="text" name="email" placeholder="Email"></br></br>
-                <div id="turma_select_div">
-                    <select id="turma_select" name="turma_select">
-                        <option value="">Turma</option>
-                    </select>
-                </div>
-              <button type="submit">Enviar</button>
-            </form>
 
-            <script>
-                document.getElementById("cep").addEventListener("change", function() {
-                  let cep_digitado = parseInt(this.value);
-                  if (cep_digitado < 13270000 || cep_digitado >= 13280000){
-                      alert("Inscrição permitida somente para moradores da Cidade de Valinhos!");
-                      this.value='';
-                  }
-                });
-                document.getElementById("cpf").addEventListener("change", function() {
-                  var xhr = new XMLHttpRequest();
-                  xhr.open("GET", "/validar_cpf/" + this.value);
-                  xhr.onload = function() {
-                    if (xhr.status === 200) {
-                      if (xhr.responseText === "False") {
-                        alert("Esse CPF NÃO é válido ou já foi usado em uma inscrição!");
-                      }
-                    }
-                  };
-                  xhr.send();
-                });
-                document.getElementById("nascimento").addEventListener("change", function() {
-                  var data_nascimento = new Date(this.value);
-                  var idade = new Date(Date.now() - data_nascimento.getTime()).getUTCFullYear() - 1970;
+<head>
+  <meta charset="utf-8">
+  <title>Formulário de Inscrição</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-                  if (idade < 7) {
-                    alert("Não é permitida a Incrição de Menores de 7 anos!");
-                    this.value='';
-                    return;
-                  }
+  <!-- Css -->
+  <link href="/css/estrutura_interna_mobile.css?1676313345" rel="stylesheet" type="text/css">
+  <link href="https://www.valinhos.sp.gov.br/css/style.css?1629489445" rel="stylesheet" type="text/css" />
+  <link href="https://www.valinhos.sp.gov.br/css/style_interna_mobile.css?1629489444" rel="stylesheet" type="text/css">
+  <link href="https://www.valinhos.sp.gov.br/css/menu_mobile.css?1629489448" rel="stylesheet" type="text/css"
+    media="screen and (max-width:1000px)">
+  <link href="https://www.valinhos.sp.gov.br/css/style_mobile.css?1629489448" rel="stylesheet" type="text/css">
+  <link href="https://www.valinhos.sp.gov.br/css/estrutura_mobile.css?1629489448" rel="stylesheet" type="text/css">
+  <link href="https://www.valinhos.sp.gov.br/css/estrutura.css?1648652580" rel="stylesheet" type="text/css" />
 
-                  var turma_select = document.getElementById("turma_select");
+  <!-- FONT-AWESOME -->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.13.1/css/all.css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.3/css/v4-shims.css">
+  <link rel="stylesheet" href="{{ url_for('static',     filename='css/template.css') }}">
+  <link rel="stylesheet" href="css/css.css">
 
-                  if (idade >= 7 && idade <= 14) {
-                    turma_select.innerHTML = `
+  <link rel="stylesheet" type="text/css" href="https://www.valinhos.sp.gov.br/sliders/engine4/style.css" />
+  <script src="https://www.valinhos.sp.gov.br/sliders/engine4/jquery.js"></script>
+</head>
+
+<body>
+  <header>
+    <div id="topo" class="e_cor_fundo_m">
+      <div id="brasao">
+        <a href="/portal"><img src="https://www.valinhos.sp.gov.br/img/logo_mobile.png?1629488833"
+            alt="Prefeitura de Valinhos" /></a>
+      </div>
+    </div>
+    <div class="container corpo">
+      <h1>Cadastro para Aulas de Nataçao</h1>
+      <p>Após o período de cadastros, o sorteio erá feito na data divulgada pela prefeitura</h4>
+      <h4 class="logo">Preencha todas as informações!</h5>
+      <form id="inscricao-form" action="{{ url_for('submit') }}" method="POST">
+        <div class="div-imput">
+          <input class="input-texo" type="text" maxlength="8" id="cep" name="cep" placeholder="CEP Residencial">
+        </div>
+        <div class="div-imput">
+          <input class="input-texo" type="text" maxlength="11" id="cpf" name="cpf" placeholder="CPF">
+        </div>
+        <div class="div-imput">
+          <input class="input-texo" type="text" name="nome" placeholder="Nome Completo"></br></br>
+        </div>
+        <div class="div-imput">
+          <input class="input-texo" type="date" id="nascimento" name="nascimento" placeholder="Data de Nascimento">
+        </div>
+        <div class="div-imput">
+          <input class="input-texo" type="text" name="endereco" placeholder="Endereço: Rua/Av, Nº, Bairro">
+        </div>
+        <div class="div-imput">
+          <input class="input-texo" type="text" maxlength="11" name="telefone" placeholder="Telefone com DDD">
+        </div>
+        <div class="div-imput">
+          <input class="input-texo" type="text" name="email" placeholder="Email">
+        </div>
+        <div id="turma_select_div div-imput">
+          <select id="turma_select" name="turma_select">
+            <option  disabled selected value="">Coloque sua data de nasciemento</option>
+          </select>
+        </div>
+        <button type="submit" class="button is-outlined">Enviar</button>
+      </form>
+
+      <script>
+        document.getElementById("cep").addEventListener("change", function () {
+          let cep_digitado = parseInt(this.value);
+          if (cep_digitado < 13270000 || cep_digitado >= 13280000) {
+            alert("Inscrição permitida somente para moradores da Cidade de Valinhos!");
+            this.value = '';
+          }
+        });
+        document.getElementById("cpf").addEventListener("change", function () {
+          var xhr = new XMLHttpRequest();
+          xhr.open("GET", "/validar_cpf/" + this.value);
+          xhr.onload = function () {
+            if (xhr.status === 200) {
+              if (xhr.responseText === "False") {
+                alert("Esse CPF NÃO é válido ou já foi usado em uma inscrição!");
+              }
+            }
+          };
+          xhr.send();
+        });
+        document.getElementById("nascimento").addEventListener("change", function () {
+          var data_nascimento = new Date(this.value);
+          var idade = new Date(Date.now() - data_nascimento.getTime()).getUTCFullYear() - 1970;
+
+          if (idade < 7) {
+            alert("Não é permitida a Incrição de Menores de 7 anos!");
+            this.value = '';
+            return;
+          }
+
+          var turma_select = document.getElementById("turma_select");
+
+          if (idade >= 7 && idade <= 14) {
+            turma_select.innerHTML = `
                       <option value="">Selecione</option>
                       <option value="3007">Natação Infantil - TER,QUI - 09:00 às 09:45</option>
                       <option value="3008">Natação Infantil - TER,QUI - 10:00 às 10:45</option>
                       <option value="3009">Natação Infantil - QUA,SEX - 09:00 às 09:45</option>
                       <option value="3010">Natação Infantil - QUA,SEX - 10:00 às 10:45</option>
                     `;
-                  } else if (idade > 14 && idade < 60) {
-                    turma_select.innerHTML = `
+          } else if (idade > 14 && idade < 60) {
+            turma_select.innerHTML = `
                       <option value="">Selecione</option>
                       <option value="3006">Natação Adulto - TER,QUI - 08:00 às 08:45</option>
                       <option value="3001">Hidroginástica Adulto - QUA, SEX - 08:00 às 08:45</option>
                     `;
-                  } else {
-                    turma_select.innerHTML = `
+          } else {
+            turma_select.innerHTML = `
                       <option value="">Selecione</option>
                       <option value="3002">Hidroginástica 3ª idade - SEG: 08:00 às 08:45 e TER: 14:00 às 14:45</option>
                       <option value="3003">Hidroginástica 3ª idade - SEG: 09:00 às 09:45 e QUA: 14:00 às 14:45</option>
                       <option value="3004">Hidroginástica 3ª idade - SEG: 10:00 às 10:45 e QUI: 14:00 às 14:45</option>
                       <option value="3005">Hidroginástica 3ª idade - SEG, SEX: 10:00 às 10:45</option>
                     `;
-                  }
+          }
 
-                  document.getElementById("turma_select_div").style.display = "block";
-                });
+          document.getElementById("turma_select_div").style.display = "block";
+        });
 
-                document.getElementById("turma_select").addEventListener("change", function() {
-                  document.querySelectorAll("#turma_select option").forEach(function(option) {
-                    option.style.display = "block";
-                  });
-                });
-                </script>
+        document.getElementById("turma_select").addEventListener("change", function () {
+          document.querySelectorAll("#turma_select option").forEach(function (option) {
+            option.style.display = "block";
+          });
+        });
+      </script>
+    </div>
+  </header>
+
+  {% block content %}
+  {% endblock %}
+  <footer>
+    <!-- RODAPÉ -->
+    <div id="e_cont_rodape">
+      <div class="e_barra_rodape"></div>
+      <div class="e_conteudo_rodape e_conteudo_interno">
+        <!-- INFO PREFEITURA -->
+        <div class="e_area_info_prefeitura">
+          <!-- LOCALIZAÇÃO -->
+          <div class="e_cont_info_prefeitura">
+            <div class="e_img_info_prefeitura"><img src="https://www.valinhos.sp.gov.br/img/bg_localizacao.png"
+                alt="Localização"></span></div>
+            <div class="e_titulo">Localização</div>
+            <div class="e_info">Rua Antônio Carlos, 301 </div>
+          </div>
+          <!-- CONTATO -->
+          <div class="e_cont_info_prefeitura">
+            <div class="e_img_info_prefeitura"><img src="https://www.valinhos.sp.gov.br/img/bg_contato.png"
+                alt="Contato"></div>
+            <div class="e_titulo">Contato</div>
+            <div class="e_info">
+              <div class="e_link_rodape">
+                <a href="tel:(19)3849-8000">
+                  Fone: (19) 3849-8000 </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="e_area_info_prefeitura">
+          <!-- FUNCIONAMENTO -->
+          <div class="e_cont_info_prefeitura">
+            <div class="e_img_info_prefeitura"><img src="https://www.valinhos.sp.gov.br/img/bg_atendimento.png"
+                alt="Atendimento"></div>
+            <div class="e_titulo">Atendimento</div>
+            <div class="e_info">Segunda à Sexta das 8h30 às 16h00</div>
+          </div>
+          <!-- CÂMARA -->
+          <div class="e_cont_info_prefeitura">
+            <div class="e_img_info_prefeitura"><img src="https://www.valinhos.sp.gov.br/img/icon_camara.png"
+                alt="Câmara"></div>
+            <div class="e_titulo">Câmara Municipal</div>
+            <div class="e_info">
+              <div class="e_link_rodape">
+                <a href="https://www.camaravalinhos.sp.gov.br/" target="_blank">
+                  Clique <strong>aqui</strong> para acessar
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- FIM INFO PREFEITURA -->
       </div>
-    </header>
+    </div>
+    <!-- FIM RODAPÉ -->
+  </footer>
+</body>
 
-    {% block content %}
-    {% endblock %}
-
- </body>
 </html>
