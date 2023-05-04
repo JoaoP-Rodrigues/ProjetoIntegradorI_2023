@@ -1,10 +1,15 @@
 import sqlite3
 from Databases import DataBase
+import matplotlib
+import matplotlib.pyplot as plt
 from datetime import datetime
-
+from analytics import *
+from io import BytesIO
+import base64
 from flask import Flask,  render_template, request
 import os
 from Validations import *
+matplotlib.use('Agg')
 
 app = Flask(__name__)
 
@@ -64,6 +69,29 @@ def submit():
     protocol = str(datetime.now())
     post = (cpf, name, born, cep, address, phone, email, turma, protocol)
     obj.insert_inscritos(post)
+
+
+@app.route('/estatisticas')
+def estatisticas():
+    inscritos = create_chart()
+    #return render_template("stats.html", data=inscritos.to_html())
+    return inscritos
+
+
+@app.route('/plot')
+def plot():
+    img = BytesIO()
+    y = [1, 2, 3, 4, 5]
+    x = [0, 2, 1, 3, 4]
+
+    plt.plot(x, y)
+
+    plt.savefig(img, format='png')
+    plt.close()
+    img.seek(0)
+    plot_url = base64.b64encode(img.getvalue()).decode('utf8')
+
+    return render_template('images.html', plot_url=plot_url)
 
 
 if __name__ == '__main__':
