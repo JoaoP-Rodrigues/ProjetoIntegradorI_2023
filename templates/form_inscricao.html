@@ -44,7 +44,7 @@
           <input class="input-texo" type="text" maxlength="8" id="cep" name="cep" placeholder="CEP Residencial">
         </div>
         <div class="div-imput">
-          <input class="input-texo" type="text" maxlength="11" id="cpf" name="cpf" placeholder="CPF">
+          <input class="input-texo" type="text" maxlength="14" id="cpf" name="cpf" placeholder="CPF" onkeydown="javascript: fMasc( this, mCPF );" >
         </div>
         <div class="div-imput">
           <input class="input-texo" type="text" name="nome" placeholder="Nome Completo"></br></br>
@@ -62,7 +62,7 @@
           <input class="input-texo" type="text" name="email" placeholder="Email">
         </div>
         <div id="turma_select_div div-imput">
-          <select id="turma_select" name="turma_select">
+          <select id="turma_select" name="turma_select" class="selectAula">
             <option  disabled selected value="">Turma</option>
           </select>
         </div>
@@ -133,6 +133,30 @@
             option.style.display = "block";
           });
         });
+        function fMasc(objeto,mascara) {
+            obj=objeto
+            masc=mascara
+            setTimeout("fMascEx()",1)
+        }
+
+        function fMascEx() {
+         obj.value=masc(obj.value)
+        }
+
+        function mCPF(cpf){
+            cpf=cpf.replace(/\D/g,"")
+            cpf=cpf.replace(/(\d{3})(\d)/,"$1.$2")
+            cpf=cpf.replace(/(\d{3})(\d)/,"$1.$2")
+            cpf=cpf.replace(/(\d{3})(\d{1,2})$/,"$1-$2")
+            return cpf
+        }
+        function mCPF(cpf){
+            cpf=cpf.replace(/\D/g,"")
+            cpf=cpf.replace(/(\d{3})(\d)/,"$1.$2")
+            cpf=cpf.replace(/(\d{3})(\d)/,"$1.$2")
+            cpf=cpf.replace(/(\d{3})(\d{1,2})$/,"$1-$2")
+            return cpf
+        }
       </script>
     </div>
   </header>
