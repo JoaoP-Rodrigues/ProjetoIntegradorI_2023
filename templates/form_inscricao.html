@@ -41,28 +41,28 @@
       <h4 class="logo">Preencha todas as informações!</h5>
       <form id="inscricao-form" action="{{ url_for('submit') }}" method="POST">
         <div class="div-imput">
-          <input class="input-texo" type="text" maxlength="8" id="cep" name="cep" placeholder="CEP Residencial">
+          <input class="input-texo" type="text" maxlength="8" id="cep" name="cep" placeholder="CEP Residencial" required>
         </div>
         <div class="div-imput">
-          <input class="input-texo" type="text" maxlength="14" id="cpf" name="cpf" placeholder="CPF" onkeydown="javascript: fMasc( this, mCPF );" >
+          <input class="input-texo" type="text" maxlength="14" id="cpf" name="cpf" placeholder="CPF" onkeydown="javascript: fMasc( this, mCPF );" required>
         </div>
         <div class="div-imput">
-          <input class="input-texo" type="text" name="nome" placeholder="Nome Completo">
+          <input class="input-texo" type="text" name="nome" placeholder="Nome Completo" required>
         </div>
         <div class="div-imput">
-          <input class="input-texo" type="date" id="nascimento" name="nascimento" placeholder="Data de Nascimento">
+          <input class="input-texo" type="date" id="nascimento" name="nascimento" placeholder="Data de Nascimento" required>
         </div>
         <div class="div-imput">
-          <input class="input-texo" type="text" name="endereco" placeholder="Endereço: Rua/Av, Nº, Bairro">
+          <input class="input-texo" type="text" name="endereco" placeholder="Endereço: Rua/Av, Nº, Bairro" required>
         </div>
         <div class="div-imput">
-          <input class="input-texo" type="text" maxlength="11" name="telefone" placeholder="Telefone com DDD">
+          <input class="input-texo" type="text" maxlength="11" name="telefone" placeholder="Telefone com DDD" required> 
         </div>
         <div class="div-imput">
-          <input class="input-texo" type="text" name="email" placeholder="Email">
+          <input class="input-texo" type="text" name="email" placeholder="Email" required>
         </div>
         <div id="turma_select_div div-imput">
-          <select id="turma_select" name="turma_select" class="selectAula">
+          <select id="turma_select" name="turma_select" class="selectAula" required>
             <option  disabled selected value="">Turma</option>
           </select>
         </div>
