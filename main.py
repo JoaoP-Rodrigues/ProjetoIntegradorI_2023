@@ -18,39 +18,27 @@ def index():
     return render_template('form_inscricao.html')
 
 
-@app.route('/inscricao')
-def inscricao():
-    return render_template('form_inscricao.html')
-
-
-@app.route('/form_cpf')
-def form_cpf():
-    return render_template('form_cpf.html')
-
-
-@app.route('/valida-cep/<cep>')
+@app.route('/valida_cep/<cep>', methods=['GET', 'POST'])
 def valida_cep(cep):
-    #cep = request.form['cep']
     validacao = Validations.valida_cep(cep)
-    return 'True' if validacao else 'False'
-        #return form_cpf()
-        #return True
-    #else:
-        #return False
-        #return index()
+    if validacao:
+        return 'True'
+    else:
+        return f'INSCRIÇÃO PERMITIDA SOMENTE PARA MORADORES DE VALINHOS!\nO CEP {cep} NÃO PERTENCE A CIDADE DE VALINHOS!'
 
-@app.route('/valida_cpf/<cpf>')
-#@app.route('/valida_cpf/<cpf>', methods=['GET', 'POST'])
+
+@app.route('/valida_cpf/<cpf>', methods=['GET', 'POST'])
 def valida_cpf(cpf):
-    #cpf = request.form['cpf']
-    print(cpf)
-    validacao = Validations.valida_cpf(cpf)
-    print(validacao)
-    return 'True' if validacao else 'False'
-    #if validacao:
-    #    return inscricao()
-    #else:
-    #    return index()
+
+    first_validacao = Validations.cpf_validate(cpf)
+    if first_validacao:
+        second_validacao = Validations.check_cpf_db(cpf)
+        if second_validacao:
+            return 'True'
+        else:
+            return 'ESTE CPF JÁ FOI USADO EM UMA INSCRIÇÃO!'
+    else:
+        return 'ESTE NÃO É UM NÚMERO VÁLIDO DE CPF!'
 
 
 @app.route('/submit', methods=['POST'])

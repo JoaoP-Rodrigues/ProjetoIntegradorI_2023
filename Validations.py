@@ -27,8 +27,11 @@ class Validations:
 
     @staticmethod
     def check_cpf_db(cpf_user):
+        import string
         obj = DataBase()
         obj.create_connection()
+
+        cpf_user = cpf_user.translate(str.maketrans('', '', string.punctuation))
 
         query = f'SELECT CPF FROM INSCRICOES WHERE CPF = "{cpf_user}"'
         obj.cur.execute(query)
@@ -40,18 +43,9 @@ class Validations:
 
 
     @staticmethod
-    def valida_cpf(cpf_user):
-        if Validations.cpf_validate(cpf_user):
-            if Validations.check_cpf_db(cpf_user):
-                return True
-            else:
-                return False
-        else:
-            return False
-
-
-    @staticmethod
     def valida_cep(cep):
+        import string
+        cep = cep.translate(str.maketrans('', '', string.punctuation))
         try:
             address = pycep_correios.get_address_from_cep(cep, webservice=pycep_correios.WebService.APICEP)
             cidade = address['cidade']

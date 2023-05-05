@@ -71,24 +71,32 @@
 
       <script>
         document.getElementById("cep").addEventListener("change", function () {
-          let cep_digitado = parseInt(this.value);
-          if (cep_digitado < 13270000 || cep_digitado >= 13280000) {
-            alert("Inscrição permitida somente para moradores da Cidade de Valinhos!");
-            this.value = '';
-          }
-        });
-        document.getElementById("cpf").addEventListener("change", function () {
           var xhr = new XMLHttpRequest();
-          xhr.open("GET", "/validar_cpf/" + this.value);
+          xhr.open("GET", "/valida_cep/" + this.value);
           xhr.onload = function () {
             if (xhr.status === 200) {
-              if (xhr.responseText === "False") {
-                alert("Esse CPF NÃO é válido ou já foi usado em uma inscrição!");
+              if (xhr.responseText !== "True") {
+                document.getElementById('cep').value='';
+                alert(xhr.responseText);
               }
             }
           };
           xhr.send();
         });
+        document.getElementById("cpf").addEventListener("change", function () {
+          var xhr = new XMLHttpRequest();
+          xhr.open("GET", "/valida_cpf/" + this.value);
+          xhr.onload = function () {
+            if (xhr.status === 200) {
+              if (xhr.responseText !== "True") {
+                document.getElementById('cpf').value='';
+                alert(xhr.responseText);
+              }
+            }
+          };
+          xhr.send();
+        });
+
         document.getElementById("nascimento").addEventListener("change", function () {
           var data_nascimento = new Date(this.value);
           var idade = new Date(Date.now() - data_nascimento.getTime()).getUTCFullYear() - 1970;

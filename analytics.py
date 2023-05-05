@@ -71,4 +71,4 @@ def sorteio():
     for k in params.keys():
         print(df_sorteados.loc[df_sorteados['TURMA'] == k])
 
-sorteio()
+#sorteio()
