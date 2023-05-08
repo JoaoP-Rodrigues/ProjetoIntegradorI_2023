@@ -1,32 +1,100 @@
 <!DOCTYPE html>
-<html>
+<html lang="PT-BR" dir="ltr">
+
 <head>
-    <title>Inscrição Inteligente</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <meta charset="utf-8">
+  <title>Formulário de Inscrição</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+  <!-- Css -->
+  <link href="/css/estrutura_interna_mobile.css?1676313345" rel="stylesheet" type="text/css">
+  <link href="https://www.valinhos.sp.gov.br/css/style.css?1629489445" rel="stylesheet" type="text/css" />
+  <link href="https://www.valinhos.sp.gov.br/css/style_interna_mobile.css?1629489444" rel="stylesheet" type="text/css">
+  <link href="https://www.valinhos.sp.gov.br/css/menu_mobile.css?1629489448" rel="stylesheet" type="text/css"
+    media="screen and (max-width:1000px)">
+  <link href="https://www.valinhos.sp.gov.br/css/style_mobile.css?1629489448" rel="stylesheet" type="text/css">
+  <link href="https://www.valinhos.sp.gov.br/css/estrutura_mobile.css?1629489448" rel="stylesheet" type="text/css">
+  <link href="https://www.valinhos.sp.gov.br/css/estrutura.css?1648652580" rel="stylesheet" type="text/css" />
+
+  <!-- FONT-AWESOME -->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.13.1/css/all.css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.3/css/v4-shims.css">
+  <link rel="stylesheet" href="{{ url_for('static',     filename='css/template.css') }}">
+  <link rel="stylesheet" href="css/css.css">
+
+  <link rel="stylesheet" type="text/css" href="https://www.valinhos.sp.gov.br/sliders/engine4/style.css" />
+  <script src="https://www.valinhos.sp.gov.br/sliders/engine4/jquery.js"></script>
 </head>
+
 <body>
-    <div id="resultado">
-        <h1>Validação do CEP</h1>
-        <form id="init-form">
-            <input type="text" name="cep" placeholder="CEP">
-            <button type="submit">Enviar</button>
-        </form>
+  <header>
+    <div id="topo" class="e_cor_fundo_m">
+      <div id="brasao">
+        <a href="/portal"><img src="https://www.valinhos.sp.gov.br/img/logo_mobile.png?1629488833"
+            alt="Prefeitura de Valinhos" /></a>
+      </div>
     </div>
 
-    <script type="text/javascript">
-        $(document).ready(function() {
-            $('#init-form').submit(function(event) {
-                event.preventDefault();
-                $.ajax({
-                    url: '/valida-cep',
-                    type: 'POST',
-                    data: $('#init-form').serialize(),
-                    success: function(response) {
-                        $('#resultado').html(response);
-                    }
-                });
-            });
-        });
-    </script>
+  </header>
+
+  {% block content %}
+  {% endblock %}
+
+  <footer>
+    <!-- RODAPÉ -->
+    <div id="e_cont_rodape">
+      <div class="e_barra_rodape"></div>
+      <div class="e_conteudo_rodape e_conteudo_interno">
+        <!-- INFO PREFEITURA -->
+        <div class="e_area_info_prefeitura">
+          <!-- LOCALIZAÇÃO -->
+          <div class="e_cont_info_prefeitura">
+            <div class="e_img_info_prefeitura"><img src="https://www.valinhos.sp.gov.br/img/bg_localizacao.png"
+                alt="Localização"></span></div>
+            <div class="e_titulo">Localização</div>
+            <div class="e_info">Rua Antônio Carlos, 301 </div>
+          </div>
+          <!-- CONTATO -->
+          <div class="e_cont_info_prefeitura">
+            <div class="e_img_info_prefeitura"><img src="https://www.valinhos.sp.gov.br/img/bg_contato.png"
+                alt="Contato"></div>
+            <div class="e_titulo">Contato</div>
+            <div class="e_info">
+              <div class="e_link_rodape">
+                <a href="tel:(19)3849-8000">
+                  Fone: (19) 3849-8000 </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="e_area_info_prefeitura">
+          <!-- FUNCIONAMENTO -->
+          <div class="e_cont_info_prefeitura">
+            <div class="e_img_info_prefeitura"><img src="https://www.valinhos.sp.gov.br/img/bg_atendimento.png"
+                alt="Atendimento"></div>
+            <div class="e_titulo">Atendimento</div>
+            <div class="e_info">Segunda à Sexta das 8h30 às 16h00</div>
+          </div>
+          <!-- CÂMARA -->
+          <div class="e_cont_info_prefeitura">
+            <div class="e_img_info_prefeitura"><img src="https://www.valinhos.sp.gov.br/img/icon_camara.png"
+                alt="Câmara"></div>
+            <div class="e_titulo">Câmara Municipal</div>
+            <div class="e_info">
+              <div class="e_link_rodape">
+                <a href="https://www.camaravalinhos.sp.gov.br/" target="_blank">
+                  Clique <strong>aqui</strong> para acessar
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- FIM INFO PREFEITURA -->
+      </div>
+    </div>
+    <!-- FIM RODAPÉ -->
+  </footer>
 </body>
+
 </html>

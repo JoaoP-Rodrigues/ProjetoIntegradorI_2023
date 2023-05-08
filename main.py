@@ -7,15 +7,15 @@ from analytics import *
 from io import BytesIO
 import base64
 from flask import Flask,  render_template, request
-import os
 from Validations import *
+import string
 matplotlib.use('Agg')
 
 app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return render_template('form_inscricao.html')
+    return render_template('inscricao.html')
 
 
 @app.route('/valida_cep/<cep>', methods=['GET', 'POST'])
@@ -24,16 +24,17 @@ def valida_cep(cep):
     if validacao:
         return 'True'
     else:
-        return f'INSCRIÇÃO PERMITIDA SOMENTE PARA MORADORES DE VALINHOS!\nO CEP {cep} NÃO PERTENCE A CIDADE DE VALINHOS!'
+        return f'INSCRIÇÃO PERMITIDA SOMENTE PARA MORADORES DE VALINHOS!\n' \
+               f'O CEP {cep} NÃO PERTENCE A CIDADE DE VALINHOS!'
 
 
 @app.route('/valida_cpf/<cpf>', methods=['GET', 'POST'])
 def valida_cpf(cpf):
 
-    first_validacao = Validations.cpf_validate(cpf)
-    if first_validacao:
-        second_validacao = Validations.check_cpf_db(cpf)
-        if second_validacao:
+    first_validation = Validations.cpf_validate(cpf)
+    if first_validation:
+        second_validation = Validations.check_cpf_db(cpf)
+        if second_validation:
             return 'True'
         else:
             return 'ESTE CPF JÁ FOI USADO EM UMA INSCRIÇÃO!'
@@ -50,13 +51,25 @@ def submit():
     address = request.form['endereco']
     phone = request.form['telefone']
     email = request.form['email']
-    turma = request.form['turma']
+    turma = request.form['turma_select']
+
+    # limpeza dos dados
+    cep = cep.translate(str.maketrans('', '', string.punctuation))
+    cpf = cpf.translate(str.maketrans('', '', string.punctuation))
+    protocol = str(datetime.now())
+    protocol = protocol.translate(str.maketrans('', '', string.punctuation))
+    protocol = protocol.replace(' ', '')
 
     obj = DataBase()
     obj.create_connection()
-    protocol = str(datetime.now())
     post = (cpf, name, born, cep, address, phone, email, turma, protocol)
     obj.insert_inscritos(post)
+    
+
+    if not Validations.check_cpf_db(cpf):
+        return f"SUA INSCRIÇÃO FOI REALIZADA COM SUCESSO!\nESTE É O SEU PROTOCOLO: {protocol}"
+    else:
+        return "POR ALGUM MOTIVO, SUA INSCRIÇÃO NÃO FOI REALIZADA.\nPOR FAVOR, TENTE NOVAMENTE DENTRO DE ALGUNS INSTANTES."
 
 
 @app.route('/estatisticas')

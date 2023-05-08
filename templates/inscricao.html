@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Formulário de Inscrição</title>
+  </head>
+  <body>
+    {% extends "index.html" %}
+    {% block content %}
+
+    <div class="container corpo">
+      <h1>Cadastro para Aulas de Nataçao</h1>
+      <p>Após o período de cadastros, o sorteio erá feito na data divulgada pela prefeitura</h4>
+      <h4 class="logo">Preencha todas as informações!</h5>
+      <form id="inscricao-form" action="{{ url_for('submit') }}" method="POST">
+        <div class="div-imput">
+          <input class="input-texo" type="text" maxlength="8" id="cep" name="cep" placeholder="CEP Residencial" required>
+        </div>
+        <div class="div-imput">
+          <input class="input-texo" type="text" maxlength="14" id="cpf" name="cpf" placeholder="CPF" onkeydown="javascript: fMasc( this, mCPF );" required>
+        </div>
+        <div class="div-imput">
+          <input class="input-texo" type="text" name="nome" placeholder="Nome Completo" required>
+        </div>
+        <div class="div-imput">
+          <input class="input-texo" type="date" id="nascimento" name="nascimento" placeholder="Data de Nascimento" required>
+        </div>
+        <div class="div-imput">
+          <input class="input-texo" type="text" name="endereco" placeholder="Endereço: Rua/Av, Nº, Bairro" required>
+        </div>
+        <div class="div-imput">
+          <input class="input-texo" type="text" maxlength="11" name="telefone" placeholder="Telefone com DDD" required>
+        </div>
+        <div class="div-imput">
+          <input class="input-texo" type="text" name="email" placeholder="Email" required>
+        </div>
+        <div id="turma_select_div div-imput">
+          <select id="turma_select" name="turma_select" class="selectAula" required>
+            <option  disabled selected value="">Turma</option>
+          </select>
+        </div>
+        <button type="submit" class="button is-outlined">Enviar</button>
+      </form>
+
+      <script>
+        document.getElementById("cep").addEventListener("change", function () {
+          var xhr = new XMLHttpRequest();
+          xhr.open("GET", "/valida_cep/" + this.value);
+          xhr.onload = function () {
+            if (xhr.status === 200) {
+              if (xhr.responseText !== "True") {
+                document.getElementById('cep').value='';
+                alert(xhr.responseText);
+              }
+            }
+          };
+          xhr.send();
+        });
+        document.getElementById("cpf").addEventListener("change", function () {
+          var xhr = new XMLHttpRequest();
+          xhr.open("GET", "/valida_cpf/" + this.value);
+          xhr.onload = function () {
+            if (xhr.status === 200) {
+              if (xhr.responseText !== "True") {
+                document.getElementById('cpf').value='';
+                alert(xhr.responseText);
+              }
+            }
+          };
+          xhr.send();
+        });
+
+        document.getElementById("nascimento").addEventListener("change", function () {
+          var data_nascimento = new Date(this.value);
+          var idade = new Date(Date.now() - data_nascimento.getTime()).getUTCFullYear() - 1970;
+
+          if (idade < 7) {
+            alert("Não é permitida a Incrição de Menores de 7 anos!");
+            this.value = '';
+            return;
+          }
+
+          var turma_select = document.getElementById("turma_select");
+
+          if (idade >= 7 && idade <= 14) {
+            turma_select.innerHTML = `
+                      <option disabled selected value="">Turmas Infantil</option>
+                      <option value="3007">Natação Infantil - TER,QUI - 09:00 às 09:45</option>
+                      <option value="3008">Natação Infantil - TER,QUI - 10:00 às 10:45</option>
+                      <option value="3009">Natação Infantil - QUA,SEX - 09:00 às 09:45</option>
+                      <option value="3010">Natação Infantil - QUA,SEX - 10:00 às 10:45</option>
+                    `;
+          } else if (idade > 14 && idade < 60) {
+            turma_select.innerHTML = `
+                      <option disabled selected value="">Turmas Adulto</option>
+                      <option value="3006">Natação Adulto - TER,QUI - 08:00 às 08:45</option>
+                      <option value="3001">Hidroginástica Adulto - QUA, SEX - 08:00 às 08:45</option>
+                    `;
+          } else {
+            turma_select.innerHTML = `
+                      <option disabled selected value="">Turmas 3ª idade</option>
+                      <option value="3002">Hidroginástica 3ª idade - SEG: 08:00 às 08:45 e TER: 14:00 às 14:45</option>
+                      <option value="3003">Hidroginástica 3ª idade - SEG: 09:00 às 09:45 e QUA: 14:00 às 14:45</option>
+                      <option value="3004">Hidroginástica 3ª idade - SEG: 10:00 às 10:45 e QUI: 14:00 às 14:45</option>
+                      <option value="3005">Hidroginástica 3ª idade - SEG, SEX: 10:00 às 10:45</option>
+                    `;
+          }
+
+          document.getElementById("turma_select_div").style.display = "block";
+        });
+
+        document.getElementById("turma_select").addEventListener("change", function () {
+          document.querySelectorAll("#turma_select option").forEach(function (option) {
+            option.style.display = "block";
+          });
+        });
+        function fMasc(objeto,mascara) {
+            obj=objeto
+            masc=mascara
+            setTimeout("fMascEx()",1)
+        }
+
+        function fMascEx() {
+         obj.value=masc(obj.value)
+        }
+
+        function mCPF(cpf){
+            cpf=cpf.replace(/\D/g,"")
+            cpf=cpf.replace(/(\d{3})(\d)/,"$1.$2")
+            cpf=cpf.replace(/(\d{3})(\d)/,"$1.$2")
+            cpf=cpf.replace(/(\d{3})(\d{1,2})$/,"$1-$2")
+            return cpf
+        }
+        function mCPF(cpf){
+            cpf=cpf.replace(/\D/g,"")
+            cpf=cpf.replace(/(\d{3})(\d)/,"$1.$2")
+            cpf=cpf.replace(/(\d{3})(\d)/,"$1.$2")
+            cpf=cpf.replace(/(\d{3})(\d{1,2})$/,"$1-$2")
+            return cpf
+        }
+      </script>
+    </div>
+
+    {% endblock %}
+  </body>
+</html>
