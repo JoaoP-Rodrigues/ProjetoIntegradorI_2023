@@ -1,7 +1,7 @@
 import sqlite3
 import sqlalchemy
-from pycep_correios import get_address_from_cep, WebService, exceptions
-import pycep_correios
+from brazilcep import get_address_from_cep, WebService, exceptions
+import brazilcep
 from Databases import DataBase
 
 class Validations:
