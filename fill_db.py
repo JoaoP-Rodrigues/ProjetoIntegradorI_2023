@@ -1,11 +1,36 @@
 import sqlite3
-from Databases import DataBase
+from Databases import DataBase, User
 from datetime import datetime
 import time
 import random
 from Validations import Validations
 
-nomes = [['Joao', 'Jose', 'Bruno', 'Aline', 'Carla', 'Maria', 'Dionisia', 'Roberto'],
+import datetime
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+#from tabledef import *
+
+engine = create_engine('sqlite:///ProjetoIntegradorI_2023/users.db', echo=True)
+
+# create a Session
+Session = sessionmaker(bind=engine)
+session = Session()
+
+user = User("admin", "password")
+session.add(user)
+
+user = User("python", "python")
+session.add(user)
+
+user = User("jumpiness", "python")
+session.add(user)
+
+# commit the record the database
+session.commit()
+
+session.commit()
+
+'''nomes = [['Joao', 'Jose', 'Bruno', 'Aline', 'Carla', 'Maria', 'Dionisia', 'Roberto'],
          ['da Silva', 'Rodrigues', 'Souza', 'dos Santos']]
 endereco = [['Rua', 'Avenida'],
             ['Cupertina', 'Campos Salles', 'Invernada', 'Independência', 'Onze de Agosto', 'Don Nery'],
@@ -40,4 +65,4 @@ for i in range(0, 1032):
     obj.insert_inscritos(post)
 
     time.sleep(0.5)
-    print(protocol)
+    print(protocol)'''

@@ -1,6 +1,11 @@
 import sqlite3
 from sqlite3 import Error
 import pandas as pd
+from sqlalchemy import *
+from sqlalchemy import create_engine, ForeignKey
+from sqlalchemy import Column, Date, Integer, String
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import relationship, backref
 
 
 class DataBase:
@@ -35,3 +40,23 @@ class DataBase:
 
     def query_read(self, query):
         return pd.read_sql_query(query, self.conn)
+
+
+engine = create_engine('sqlite:///ProjetoIntegradorI_2023/DataBase/Banco_PI.db', echo=True)
+Base = declarative_base()
+
+########################################################################
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True)
+    email = Column(String)
+    password = Column(String)
+
+    #----------------------------------------------------------------------
+    def __init__(self, email, password):
+        self.email = email
+        self.password = password
+
+# create tables
+Base.metadata.create_all(engine)

@@ -1,17 +1,24 @@
-import sqlite3
-from Databases import DataBase
+from Databases import DataBase, User
 import matplotlib
 import matplotlib.pyplot as plt
 from datetime import datetime
 from analytics import *
 from io import BytesIO
 import base64
-from flask import Flask,  render_template, request
+import os
+from flask import Flask,  render_template, request,  flash, redirect, session, abort
 from Validations import *
 import string
+import datetime
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+import hashlib
+
 matplotlib.use('Agg')
 
 app = Flask(__name__)
+app.debug=True
+
 
 @app.route('/')
 def index():
@@ -95,6 +102,40 @@ def plot():
     return render_template('images.html', plot_url=plot_url)
 
 
+@app.route('/admin')
+def admin():
+    if not session.get('logged_in'):
+        return render_template('login.html')
+    else:
+        return render_template('admin.html')
+
+@app.route('/login', methods=['POST'])
+def do_admin_login():
+    engine = create_engine('sqlite:///ProjetoIntegradorI_2023/DataBase/Banco_PI.db', echo=True)
+
+    POST_USERNAME = str(request.form['email'])
+    POST_PASSWORD = str(request.form['password'])
+
+    hash_object = hashlib.sha256(POST_PASSWORD.encode())
+    hex_pass = hash_object.hexdigest()
+
+    Session = sessionmaker(bind=engine)
+    s = Session()
+    query = s.query(User).filter(User.email.in_([POST_USERNAME]), User.password.in_([hex_pass]) )
+    result = query.first()
+    if result:
+        session['logged_in'] = True
+    else:
+        flash('Senha Incorreta!')
+    return admin()
+
+@app.route("/logout")
+def logout():
+    session['logged_in'] = False
+    return admin()
+
+
 if __name__ == '__main__':
+    app.secret_key = os.urandom(12)
     app.run(debug=True)  # Executa a aplicação
 

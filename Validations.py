@@ -1,8 +1,7 @@
-import sqlite3
-import sqlalchemy
-from brazilcep import get_address_from_cep, WebService, exceptions
-import brazilcep
+from pycep_correios import get_address_from_cep, WebService, exceptions
+import pycep_correios
 from Databases import DataBase
+import string
 
 class Validations:
 
@@ -27,7 +26,7 @@ class Validations:
 
     @staticmethod
     def check_cpf_db(cpf_user):
-        import string
+
         obj = DataBase()
         obj.create_connection()
 
@@ -44,7 +43,7 @@ class Validations:
 
     @staticmethod
     def valida_cep(cep):
-        import string
+
         cep = cep.translate(str.maketrans('', '', string.punctuation))
         try:
             address = pycep_correios.get_address_from_cep(cep, webservice=pycep_correios.WebService.APICEP)
@@ -71,4 +70,21 @@ class Validations:
 
         except pycep_correios.exceptions.BaseException as e:
             return e
+
+    @staticmethod
+    def get_user(user_mail):
+        obj = DataBase()
+        obj.create_connection()
+
+        try:
+            user_mail = user_mail.lower()
+            query = f'SELECT name, email, password FROM login WHERE email = "{user_mail}"'
+            obj.cur.execute(query)
+            resultado = obj.cur.fetchall()
+            if len(resultado) != 0:
+                return resultado
+            else:
+                return 'Este e-mail não foi encontrado em nossa base de dados!'
+        except:
+            return 'Este não é um e-mail válido!\n Tente novamente!'
 

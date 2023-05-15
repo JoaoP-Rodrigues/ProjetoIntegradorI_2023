@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Administração</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/css.css') }}">
+  </head>
+  <body>
+    {% extends "index.html" %}
+    {% block content %}
+
+    <div class="container corpo">
+      <h2>Hello, Boss!</h2>
+      <a href="/logout" class="button is-outlined">Sair</a>
+    </div>
+
+    {% endblock %}
+  </body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Login na Administração</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/css.css') }}">
+  </head>
+  <body>
+    {% extends "index.html" %}
+    {% block content %}
+
+    {% if session['logged_in'] %}
+
+    <h4>Você precisa fazer o login!</h4>
+
+    {% else %}
+    <div class="container corpo">
+      <form action="/login" method="POST">
+        <div class="div-imput">
+          <input class="input-texo" type="email" name="email" placeholder="E-mail">
+        </div>
+        <div class="div-imput">
+          <input class="input-texo" type="password" name="password" placeholder="Senha">
+        </div>
+          <input type="submit" class="button is-outlined" value="Entrar">
+      </form>
+    </div>
+
+    {% endif %}
+    {% endblock %}
+  </body>
+</html>
