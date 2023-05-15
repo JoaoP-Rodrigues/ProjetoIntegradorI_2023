@@ -76,15 +76,13 @@ class Validations:
         obj = DataBase()
         obj.create_connection()
 
-        try:
-            user_mail = user_mail.lower()
-            query = f'SELECT name, email, password FROM login WHERE email = "{user_mail}"'
-            obj.cur.execute(query)
-            resultado = obj.cur.fetchall()
-            if len(resultado) != 0:
-                return resultado
-            else:
-                return 'Este e-mail não foi encontrado em nossa base de dados!'
-        except:
-            return 'Este não é um e-mail válido!\n Tente novamente!'
+        user_mail = user_mail.lower()
+        query = f'SELECT email FROM users WHERE email = "{user_mail}"'
+        obj.cur.execute(query)
+        resultado = obj.cur.fetchall()
+
+        if len(resultado) != 0:
+            return False
+        else:
+            return True
 

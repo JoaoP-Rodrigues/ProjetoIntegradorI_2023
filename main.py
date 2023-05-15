@@ -6,7 +6,7 @@ from analytics import *
 from io import BytesIO
 import base64
 import os
-from flask import Flask,  render_template, request,  flash, redirect, session, abort
+from flask import Flask,  render_template, request,  flash, redirect, session, abort, url_for
 from Validations import *
 import string
 import datetime
@@ -48,6 +48,15 @@ def valida_cpf(cpf):
     else:
         return 'ESTE NÃO É UM NÚMERO VÁLIDO DE CPF!'
 
+@app.route('/valida_email/<email>', methods=['GET'])
+def valida_mail(email):
+    validation = Validations.get_user(email)
+    #print(email)
+    if validation:
+        return 'True'
+    else:
+        return 'ESTE EMAIL JÁ EXISTE EM NOSSA BASE DE DADOS!'
+
 
 @app.route('/submit', methods=['POST'])
 def submit():
@@ -81,9 +90,12 @@ def submit():
 
 @app.route('/estatisticas')
 def estatisticas():
-    inscritos = create_chart()
-    #return render_template("stats.html", data=inscritos.to_html())
-    return inscritos
+    if not session.get('logged_in'):
+        return render_template('login.html')
+    else:
+        inscritos = create_chart()
+        flash(inscritos)
+        return render_template('stats.html')
 
 
 @app.route('/plot')
@@ -128,6 +140,33 @@ def do_admin_login():
     else:
         flash('Senha Incorreta!')
     return admin()
+
+@app.route('/signup')
+def signup():
+    if not session.get('logged_in'):
+        return render_template('login.html')
+    else:
+        return render_template('signup.html')
+
+@app.route('/signup', methods=['POST'])
+def signup_post():
+    mail = request.form.get('email')
+    nome = request.form.get('name')
+    password = request.form.get('password')
+
+    hash_object = hashlib.sha256(password.encode())
+    hex_pass = hash_object.hexdigest()
+
+    obj = DataBase()
+    obj.create_connection()
+    # create a new user with the form data. Hash the password so the plaintext version isn't saved.
+    obj.insert_users((nome, mail, hex_pass))
+
+    validation = Validations.get_user(mail)
+    if not validation:
+        flash('CADASTRO REALIZADO COM SUCESSO!')
+        return redirect(url_for('signup'))
+
 
 @app.route("/logout")
 def logout():

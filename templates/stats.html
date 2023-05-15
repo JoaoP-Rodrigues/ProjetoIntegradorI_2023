@@ -1,18 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Estatísticas de Inscritos</title>
-</head>
-<body>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Incritos</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/css.css') }}">
+  </head>
+  <body>
+    {% extends "index.html" %}
+    {% block content %}
 
-<!--{% for table in tables %}
-            {{titles[loop.index]}}
-            {{ table|safe }}
-{% endfor %}-->
-{% block content %}
-<h1>{{name}}</h1>
-{{data | safe}}
-{% endblock %}
-</body>
+    <div class="container corpo">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="title">
+                {{ messages[0] }}. Vá para a <a href="{{ url_for('admin') }}">Página de Login</a>.
+            </div>
+        {% endif %}
+        {% endwith %}
+    </div>
+
+    {% endblock %}
+  </body>
 </html>

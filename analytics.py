@@ -19,8 +19,8 @@ def get_inscritos(turma="3001"):
 
 def create_chart():
     df = get_inscritos()
-    df_ = df.groupby(["TURMA"]).count()
-    df_ = df_.reset_index()
+    #df_ = df.groupby(["TURMA"]).count()
+    df_ = df.reset_index(drop='True')
     return df_.to_html()
 
 

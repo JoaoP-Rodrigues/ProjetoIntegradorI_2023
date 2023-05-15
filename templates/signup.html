@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Cadastro de Administradores</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/css.css') }}">
+  </head>
+  <body>
+    {% extends "index.html" %}
+    {% block content %}
+    <div  class="container corpo">
+        <h2 class="title">Cadastro de Administradores</h2>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="title">
+                {{ messages[0] }}. Vá para a <a href="{{ url_for('admin') }}">Página de Login</a>.
+            </div>
+        {% endif %}
+        {% endwith %}
+        <form method="POST" action="/signup">
+            <div class="div-imput">
+                <input class="input-texo" type="email" id="email" name="email" placeholder="Email" autofocus="">
+            </div>
+            <div class="div-imput">
+                <input class="input-texo" type="text" name="name" placeholder="Nome" autofocus="">
+            </div>
+            <div class="div-imput">
+                <input class="input-texo" type="password" name="password" placeholder="Senha">
+            </div>
+            <button class="button is-outlined"><b>Cadastrar</b></button>
+        </form>
+
+        <a href="/admin" class="button is-outlined">VOLTAR</a>
+
+        <script>
+            document.getElementById("email").addEventListener("change", function() {
+              var xhr = new XMLHttpRequest();
+              console.log(this.value)
+              xhr.open("GET", "/valida_email/" + this.value);
+              xhr.onload = function () {
+                if (xhr.status === 200) {
+                  if (xhr.responseText !== "True") {
+                    document.getElementById('email').value='';
+                    alert(xhr.responseText);
+                  }
+                }
+              };
+              xhr.send();
+            });
+        </script>
+    </div>
+    {% endblock %}
+  </body>
+</html>

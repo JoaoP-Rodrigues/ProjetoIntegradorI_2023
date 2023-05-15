@@ -6,6 +6,7 @@ from sqlalchemy import create_engine, ForeignKey
 from sqlalchemy import Column, Date, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, backref
+from sqlalchemy.orm import sessionmaker
 
 
 class DataBase:
@@ -33,8 +34,8 @@ class DataBase:
         self.conn.commit()
 
     def insert_users(self, values):
-        chaves = self.get_schema('USUARIOS_ADM')
-        query = f'INSERT INTO USUARIOS_ADM {chaves} VALUES (?, ?, ?, ?, ?)'
+        #chaves = self.get_schema('users')
+        query = f'INSERT INTO users (name, email, password) VALUES (?, ?, ?)'
         self.cur.execute(query, values)
         self.conn.commit()
 
@@ -52,11 +53,25 @@ class User(Base):
     id = Column(Integer, primary_key=True)
     email = Column(String)
     password = Column(String)
+    name = Column(String)
 
-    #----------------------------------------------------------------------
-    def __init__(self, email, password):
+    def __init__(self, email, password, name):
         self.email = email
         self.password = password
+        self.name = name
+
+    def insert_adm(self, email, password, name):
+        sub_engine = create_engine('sqlite:///ProjetoIntegradorI_2023/DataBase/Banco_PI.db', echo=True)
+
+        # create a Session
+        Session = sessionmaker(bind=sub_engine)
+        session = Session()
+
+        user = User(email, password, name)
+        session.add(user)
+
+        # commit the record the database
+        session.commit()
 
 # create tables
-Base.metadata.create_all(engine)
+#Base.metadata.create_all(engine)

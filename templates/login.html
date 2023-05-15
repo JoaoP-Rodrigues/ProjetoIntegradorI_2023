@@ -15,6 +15,14 @@
 
     {% else %}
     <div class="container corpo">
+      <h2 class="title">Login na Administração!</h2>
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="title">
+                {{ messages[0] }}
+            </div>
+        {% endif %}
+        {% endwith %}
       <form action="/login" method="POST">
         <div class="div-imput">
           <input class="input-texo" type="email" name="email" placeholder="E-mail">
