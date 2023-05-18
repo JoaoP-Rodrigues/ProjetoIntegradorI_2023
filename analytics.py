@@ -21,7 +21,9 @@ def create_chart():
     df = get_inscritos()
     #df_ = df.groupby(["TURMA"]).count()
     df_ = df.reset_index(drop='True')
-    return df_.to_html()
+    colunas = ['TURMA', 'NOME', 'CPF', 'DATA_NASCIMENTO', 'TELEFONE', 'EMAIL', 'CEP', 'ENDERECO', 'PROTOCOLO']
+    df_ = df_[colunas].sort_values(by=['TURMA'])
+    return df_.reset_index(drop='True')
 
 
 def create_sorteados(params):
@@ -43,13 +45,19 @@ def create_sorteados(params):
             if sorteado not in sorteados_turma:
                 sorteados_turma.append(sorteado)
                 count += 1
-            #print(df_turma.loc[df_turma['CPF'] == sorteado])
+
         df_sorteados_turma = df_turma.loc[df_turma['CPF'].isin(sorteados_turma)]
+        df_sorteados_turma = df_sorteados_turma.reset_index(drop='True')
+        df_sorteados_turma.index = df_sorteados_turma.index.map(lambda x: x + 1)
+
         df_sorteados = pd.concat([df_sorteados, df_sorteados_turma])
+
+    colunas = ['TURMA', 'NOME', 'CPF', 'DATA_NASCIMENTO', 'TELEFONE', 'EMAIL', 'CEP', 'ENDERECO', 'PROTOCOLO']
+    df_sorteados = df_sorteados[colunas]
 
     return df_sorteados
 
-def sorteio():
+def create_sorteio():
     params = {3001: 8,
               3002: 8,
               3003: 10,
@@ -66,9 +74,13 @@ def sorteio():
     consulta = 'SELECT * FROM SORTEADOS'
     df_sorteados = db_obj.query_read(consulta)
     if len(df_sorteados) == 0:
+        colunas = ['ID_SORTEIO', 'ID_TURMA', 'CPF_USUARIO', 'NOME', 'TELEFONE', 'EMAIL', 'PROTOCOLO']
         df_sorteados = create_sorteados(params)
 
-    for k in params.keys():
-        print(df_sorteados.loc[df_sorteados['TURMA'] == k])
+        df_sorteados = df_sorteados.rename(columns={'CPF': 'CPF_USUARIO', 'TURMA': 'ID_TURMA'})
+        df_sorteados['ID_SORTEIO'] = df_sorteados.index
+        df_sorteados = df_sorteados[colunas]
 
-#sorteio()
+        db_obj.insert_sorteados(df_sorteados)
+
+    return df_sorteados

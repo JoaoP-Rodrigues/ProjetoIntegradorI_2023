@@ -5,24 +5,14 @@
     <title>Incritos</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/css.css') }}">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script> $(document).ready(function() {
-      $('#select').change(function() {
-        var selected = $(this).val();
-        $.ajax({
-          url: '/stats/' + selected,
-          success: function(data) {
-            $('#dadosInscritos').html(data);
-          }
-        });
-      });
-    });
+    <script>
       function exportTableToExcel(tableID, filename = ''){
         var downloadLink;
         var dataType = 'application/vnd.ms-excel';
         var tableSelect = document.getElementById(tableID);
         var tableHTML = tableSelect.outerHTML.replace(/ /g, '%20');
 
-        filename = filename?filename+'.xls':'Dados_de_Inscritos.xls';
+        filename = filename?filename+'.xls':'Dados_dos_Sorteados.xls';
         downloadLink = document.createElement("a");
         document.body.appendChild(downloadLink);
 
@@ -47,28 +37,22 @@
       <br>
       <a href="/admin" class="button is-outlined">Página da Administração</a>
       <br>
-
-      <select id="select">
-        <option>SELECIONE UMA TURMA!</option>
-        <option value="3001">Hidro Adulto QUA, SEX</option>
-        <option value="3002">Hidro Terceira Idade SEG, TER</option>
-        <option value="3003">Hidro Terceira Idade SEG, QUA</option>
-        <option value="3004">Hidro Terceira Idade SEG, QUI</option>
-        <option value="3005">Hidro Terceira Idade SEG, SEX</option>
-        <option value="3006">Natação Adulto TER, QUI</option>
-        <option value="3007">Natação Infantil TER, QUI - 1</option>
-        <option value="3008">Natação Infantil TER, QUI - 2</option>
-        <option value="3009">Natação Infantil QUA, SEX - 1</option>
-        <option value="3010">Natação Infantil QUA, SEX - 2</option>
-        <option value="ALL">TODAS</option>
-
-      </select>
+      <br>
+      <button onclick="exportTableToExcel('dadosSorteados')">Exportar para Excel</button>
       <br>
       <br>
-      <button onclick="exportTableToExcel('dadosInscritos')">Exportar para Excel</button>
-      <br>
-      <br>
-      <div id="dadosInscritos"></div>
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="title">
+                {{ messages[0] }}
+            </div>
+        {% endif %}
+        {% endwith %}
+      <div id="dadosSorteados">
+        {% for table in tables %}
+          {{ table|safe }}
+        {% endfor %}
+      </div>
     </div>
 
     {% endblock %}

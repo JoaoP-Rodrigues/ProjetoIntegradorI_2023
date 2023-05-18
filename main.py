@@ -87,6 +87,19 @@ def submit():
     else:
         return "POR ALGUM MOTIVO, SUA INSCRIÇÃO NÃO FOI REALIZADA.\nPOR FAVOR, TENTE NOVAMENTE DENTRO DE ALGUNS INSTANTES."
 
+@app.route('/stats/<id_turma>', methods=['GET'])
+def inscritos_por_turma(id_turma):
+
+    inscritos = create_chart()
+
+    if id_turma != 'ALL':
+        id_turma = int(id_turma)
+        filtro_inscritos = inscritos.loc[inscritos['TURMA'] == id_turma]
+        filtro_inscritos = filtro_inscritos.reset_index(drop='True')
+    else:
+        filtro_inscritos = inscritos.copy()
+
+    return filtro_inscritos.to_html(classes='data')
 
 @app.route('/estatisticas')
 def estatisticas():
@@ -94,9 +107,7 @@ def estatisticas():
         return render_template('login.html')
     else:
         inscritos = create_chart()
-        flash(inscritos)
-        return render_template('stats.html')
-
+        return render_template('stats.html', tables=[inscritos.to_html(classes='data')], titles=inscritos.columns)
 
 @app.route('/plot')
 def plot():
@@ -173,6 +184,23 @@ def logout():
     session['logged_in'] = False
     return admin()
 
+@app.route('/sorteio')
+def sorteio():
+
+    if not session.get('logged_in'):
+        return render_template('login.html')
+    else:
+
+        today = datetime.datetime.today().date()
+        data_sorteio = datetime.datetime(2023, 5, 17).date()
+
+        if today < data_sorteio:
+            data_br = data_sorteio.strftime('%d/%m/%Y')
+            flash(f'AINDA NÃO CHEGOU A DATA DO SORTEIO. \nVOLTE AQUI DEPOIS DE {data_br}')
+            return render_template('sorteio.html')
+        else:
+            sorteados = create_sorteio()
+            return render_template('sorteio.html', tables=[sorteados.to_html(classes='data')], titles=sorteados.columns)
 
 if __name__ == '__main__':
     app.secret_key = os.urandom(12)

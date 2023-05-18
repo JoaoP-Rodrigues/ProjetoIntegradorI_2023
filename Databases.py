@@ -39,6 +39,13 @@ class DataBase:
         self.cur.execute(query, values)
         self.conn.commit()
 
+    def insert_sorteados(self, sorteados):
+        #chaves = self.get_schema('SORTEADOS')
+        #query = f'INSERT INTO users {chaves} VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
+        sorteados.to_sql('SORTEADOS', con=self.conn, if_exists = 'append', index = False)
+        #self.cur.execute(query, values)
+        self.conn.commit()
+
     def query_read(self, query):
         return pd.read_sql_query(query, self.conn)
 
