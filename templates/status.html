@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Consultar Inscrição</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/css.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script> $(document).ready(function get_cpf() {
+      $('#cpf').change(function get_cpf() {
+        var cpf = $(this).val();
+        $.ajax({
+          url: '/status/' + cpf,
+          success: function(data) {
+            $('#dadosInscricao').html(data);
+          }
+        });
+      });
+    });
+
+    </script>
+  </head>
+  <body>
+    {% extends "index.html" %}
+    {% block content %}
+
+    <div class="container corpo title">
+      <br>
+      <h2>Consultar Inscrição</h2>
+      <br>
+      <div class="div-imput">
+          <input class="input-texo" type="text" name="cpf" id="cpf" placeholder="CPF (Somente números)">
+      </div>
+      <br>
+      <button onclick="get_cpf('cpf')">Consultar</button>
+      <br>
+      <br>
+      <div id="dadosInscricao">
+      </div>
+    </div>
+
+    {% endblock %}
+
+  </body>
+
+</html>

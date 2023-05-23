@@ -7,23 +7,34 @@ from matplotlib.figure import Figure
 import random
 
 
-def get_inscritos(turma="3001"):
+def get_inscritos():
     db_obj = DataBase()
     db_obj.create_connection()
 
-    # consulta = f'SELECT * FROM INSCRICOES WHERE TURMA = "{turma}"'
-    consulta = 'SELECT * FROM INSCRICOES'
+    consulta = 'SELECT * FROM VW_INSCRITOS'
     df_inscritos = db_obj.query_read(consulta)
     return df_inscritos
 
 
 def create_chart():
     df = get_inscritos()
-    #df_ = df.groupby(["TURMA"]).count()
     df_ = df.reset_index(drop='True')
-    colunas = ['TURMA', 'NOME', 'CPF', 'DATA_NASCIMENTO', 'TELEFONE', 'EMAIL', 'CEP', 'ENDERECO', 'PROTOCOLO']
-    df_ = df_[colunas].sort_values(by=['TURMA'])
+    df_.rename(columns={'NOME_TURMA': 'TURMA', 'HORARIO_AULA': 'HORARIO'}, inplace=True)
+
+    colunas = ['NOME', 'CPF', 'DATA_NASCIMENTO', 'TELEFONE', 'EMAIL', 'CEP', 'ENDERECO', 'ID_TURMA', 'TURMA', 'HORARIO', 'PROTOCOLO']
+    df_ = df_[colunas].sort_values(by=['ID_TURMA'])
+
     return df_.reset_index(drop='True')
+
+def get_inscrito_by_cpf(cpf):
+    df = create_chart()
+    colunas = ['NOME', 'CPF', 'TURMA', 'HORARIO', 'PROTOCOLO']
+    df = df[colunas]
+    df = df.loc[df['CPF'] == str(cpf)]
+    if not df.empty:
+        return df.reset_index(drop='True')
+    else:
+        return str('Inscrição não encontrada!')
 
 
 def create_sorteados(params):

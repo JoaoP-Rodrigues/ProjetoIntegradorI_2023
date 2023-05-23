@@ -11,7 +11,7 @@
 
     <div class="container corpo">
       <h1>Cadastro para Aulas de Nataçao</h1>
-      <h3>Após o período de cadastros, o sorteio erá feito na data divulgada pela prefeitura</h3>
+      <h3>Após o período de inscricoes, o sorteio será realizado na data divulgada pela prefeitura!</h3>
       <h4 class="logo">Preencha todas as informações!</h4>
       <form id="inscricao-form" action="{{ url_for('submit') }}" method="POST">
         <div class="div-imput">
@@ -40,11 +40,18 @@
         <div class="div-imput">
           <input class="input-texo" type="text" name="email" placeholder="Email" required>
         </div>
+
         <div id="turma_select_div div-imput">
           <select id="turma_select" name="turma_select" class="selectAula" required>
             <option  disabled selected value="">Turma</option>
           </select>
         </div>
+        <br>
+        <div class="div-imput">
+          <input type="checkbox" id="termos" name="termos" value="termos" required>
+          <label for="termos"><strong>Eu concordo que a Prefeitura de Valinhos armazene meus dados Única e Exclusivamente para esse processo de inscrição!</strong></label>
+        </div>
+        <br>
         <button type="submit" class="button is-outlined">Enviar</button>
       </form>
 

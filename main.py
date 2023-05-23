@@ -22,7 +22,15 @@ app.debug=True
 
 @app.route('/')
 def index():
+    return render_template('start.html')
+
+@app.route('/inscricao')
+def inscricao():
     return render_template('inscricao.html')
+
+@app.route('/status')
+def status():
+    return render_template('status.html')
 
 
 @app.route('/valida_cep/<cep>', methods=['GET', 'POST'])
@@ -51,7 +59,6 @@ def valida_cpf(cpf):
 @app.route('/valida_email/<email>', methods=['GET'])
 def valida_mail(email):
     validation = Validations.get_user(email)
-    #print(email)
     if validation:
         return 'True'
     else:
@@ -94,11 +101,12 @@ def inscritos_por_turma(id_turma):
 
     if id_turma != 'ALL':
         id_turma = int(id_turma)
-        filtro_inscritos = inscritos.loc[inscritos['TURMA'] == id_turma]
+        filtro_inscritos = inscritos.loc[inscritos['ID_TURMA'] == id_turma]
         filtro_inscritos = filtro_inscritos.reset_index(drop='True')
     else:
         filtro_inscritos = inscritos.copy()
 
+    filtro_inscritos = filtro_inscritos.drop(columns=['ID_TURMA'])
     return filtro_inscritos.to_html(classes='data')
 
 @app.route('/estatisticas')
@@ -109,6 +117,20 @@ def estatisticas():
         inscritos = create_chart()
         return render_template('stats.html', tables=[inscritos.to_html(classes='data')], titles=inscritos.columns)
 
+@app.route('/status/<cpf>', methods=['GET'])
+def get_inscricao(cpf):
+
+    cpf_user = cpf.translate(str.maketrans('', '', string.punctuation))
+    validation = Validations.cpf_validate(cpf_user)
+    if validation:
+        inscrito = get_inscrito_by_cpf(cpf_user)
+        if type(inscrito) == str:
+            return inscrito
+        else:
+            return inscrito.to_html(classes='data')
+    else:
+        return 'Este não é um CPF válido!'
+
 @app.route('/plot')
 def plot():
     img = BytesIO()
@@ -116,7 +138,6 @@ def plot():
     x = [0, 2, 1, 3, 4]
 
     plt.plot(x, y)
-
     plt.savefig(img, format='png')
     plt.close()
     img.seek(0)

@@ -1,11 +1,9 @@
 import sqlite3
 from sqlite3 import Error
 import pandas as pd
-from sqlalchemy import *
-from sqlalchemy import create_engine, ForeignKey
-from sqlalchemy import Column, Date, Integer, String
+from sqlalchemy import create_engine
+from sqlalchemy import Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship, backref
 from sqlalchemy.orm import sessionmaker
 
 
@@ -40,10 +38,8 @@ class DataBase:
         self.conn.commit()
 
     def insert_sorteados(self, sorteados):
-        #chaves = self.get_schema('SORTEADOS')
-        #query = f'INSERT INTO users {chaves} VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
-        sorteados.to_sql('SORTEADOS', con=self.conn, if_exists = 'append', index = False)
-        #self.cur.execute(query, values)
+
+        sorteados.to_sql('SORTEADOS', con=self.conn, if_exists='append', index=False)
         self.conn.commit()
 
     def query_read(self, query):
@@ -79,6 +75,3 @@ class User(Base):
 
         # commit the record the database
         session.commit()
-
-# create tables
-#Base.metadata.create_all(engine)
