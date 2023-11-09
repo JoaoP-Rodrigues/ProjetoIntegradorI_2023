@@ -1,12 +1,8 @@
 from Databases import DataBase, User
-import matplotlib
-import matplotlib.pyplot as plt
 from datetime import datetime
 from analytics import *
-from io import BytesIO
-import base64
 import os
-from flask import Flask,  render_template, request,  flash, redirect, session, abort, url_for
+from flask import Flask,  render_template, request,  flash, redirect, session, url_for
 from Validations import *
 import string
 import datetime
@@ -14,11 +10,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import hashlib
 
-matplotlib.use('Agg')
-
 app = Flask(__name__)
 app.debug=True
-
 
 @app.route('/')
 def index():
@@ -79,7 +72,7 @@ def submit():
     # limpeza dos dados
     cep = cep.translate(str.maketrans('', '', string.punctuation))
     cpf = cpf.translate(str.maketrans('', '', string.punctuation))
-    protocol = str(datetime.now())
+    protocol = str(datetime.datetime.now())
     protocol = protocol.translate(str.maketrans('', '', string.punctuation))
     protocol = protocol.replace(' ', '')
 
@@ -90,9 +83,11 @@ def submit():
     
 
     if not Validations.check_cpf_db(cpf):
-        return f"SUA INSCRIÇÃO FOI REALIZADA COM SUCESSO!\nESTE É O SEU PROTOCOLO: {protocol}"
+        flash(f"SUA INSCRIÇÃO FOI REALIZADA COM SUCESSO!<br>ESTE É O SEU PROTOCOLO:{protocol}")
+        return render_template('confirm.html')
     else:
-        return "POR ALGUM MOTIVO, SUA INSCRIÇÃO NÃO FOI REALIZADA.\nPOR FAVOR, TENTE NOVAMENTE DENTRO DE ALGUNS INSTANTES."
+        flash("POR ALGUM MOTIVO, SUA INSCRIÇÃO NÃO FOI REALIZADA.<br>POR FAVOR, TENTE NOVAMENTE DENTRO DE ALGUNS INSTANTES.")
+        return render_template('confirm.html')
 
 @app.route('/stats/<id_turma>', methods=['GET'])
 def inscritos_por_turma(id_turma):
@@ -130,20 +125,6 @@ def get_inscricao(cpf):
             return inscrito.to_html(classes='data')
     else:
         return 'Este não é um CPF válido!'
-
-@app.route('/plot')
-def plot():
-    img = BytesIO()
-    y = [1, 2, 3, 4, 5]
-    x = [0, 2, 1, 3, 4]
-
-    plt.plot(x, y)
-    plt.savefig(img, format='png')
-    plt.close()
-    img.seek(0)
-    plot_url = base64.b64encode(img.getvalue()).decode('utf8')
-
-    return render_template('images.html', plot_url=plot_url)
 
 
 @app.route('/admin')
@@ -191,7 +172,6 @@ def signup_post():
 
     obj = DataBase()
     obj.create_connection()
-    # create a new user with the form data. Hash the password so the plaintext version isn't saved.
     obj.insert_users((nome, mail, hex_pass))
 
     validation = Validations.get_user(mail)
@@ -213,7 +193,7 @@ def sorteio():
     else:
 
         today = datetime.datetime.today().date()
-        data_sorteio = datetime.datetime(2023, 5, 17).date()
+        data_sorteio = datetime.datetime(2023, 5, 30).date()
 
         if today < data_sorteio:
             data_br = data_sorteio.strftime('%d/%m/%Y')

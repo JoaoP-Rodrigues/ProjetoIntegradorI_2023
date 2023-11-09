@@ -69,16 +69,8 @@ def create_sorteados(params):
     return df_sorteados
 
 def create_sorteio():
-    params = {3001: 8,
-              3002: 8,
-              3003: 10,
-              3004: 10,
-              3005: 10,
-              3006: 8,
-              3007: 8,
-              3008: 10,
-              3009: 10,
-              3010: 10}
+    params = {3001: 20,
+              3002: 20}
 
     db_obj = DataBase()
     db_obj.create_connection()

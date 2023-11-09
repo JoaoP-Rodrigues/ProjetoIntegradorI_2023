@@ -10,7 +10,7 @@
     {% block content %}
 
     <div class="container corpo">
-      <h1>Cadastro para Aulas de Nataçao</h1>
+      <h1>Cadastro para Aulas de Futsal Infantil</h1>
       <h3>Após o período de inscricoes, o sorteio será realizado na data divulgada pela prefeitura!</h3>
       <h4 class="logo">Preencha todas as informações!</h4>
       <form id="inscricao-form" action="{{ url_for('submit') }}" method="POST">
@@ -87,8 +87,8 @@
           var data_nascimento = new Date(this.value);
           var idade = new Date(Date.now() - data_nascimento.getTime()).getUTCFullYear() - 1970;
 
-          if (idade < 7) {
-            alert("Não é permitida a Incrição de Menores de 7 anos!");
+          if (idade < 7 || idade > 14) {
+            alert("Não é permitida a Incrição de Menores de 7 anos e Maiores de 14 anos!");
             this.value = '';
             return;
           }
@@ -98,12 +98,15 @@
           if (idade >= 7 && idade <= 14) {
             turma_select.innerHTML = `
                       <option disabled selected value="">Turmas Infantil</option>
-                      <option value="3007">Natação Infantil - TER,QUI - 09:00 às 09:45</option>
-                      <option value="3008">Natação Infantil - TER,QUI - 10:00 às 10:45</option>
-                      <option value="3009">Natação Infantil - QUA,SEX - 09:00 às 09:45</option>
-                      <option value="3010">Natação Infantil - QUA,SEX - 10:00 às 10:45</option>
+                      <option value="3001">Futsal Infantil - Feminino</option>
+                      <option value="3002">Futsal Infantil - Masculino</option>
                     `;
-          } else if (idade > 14 && idade < 60) {
+          } else {
+            turma_select.innerHTML = `
+                      <option disabled selected value="">Turmas 3ª idade</option>
+                    `;
+          }
+          /*else if (idade > 14) {
             turma_select.innerHTML = `
                       <option disabled selected value="">Turmas Adulto</option>
                       <option value="3006">Natação Adulto - TER,QUI - 08:00 às 08:45</option>
@@ -117,7 +120,7 @@
                       <option value="3004">Hidroginástica 3ª idade - SEG: 10:00 às 10:45 e QUI: 14:00 às 14:45</option>
                       <option value="3005">Hidroginástica 3ª idade - SEG, SEX: 10:00 às 10:45</option>
                     `;
-          }
+          }*/
 
           document.getElementById("turma_select_div").style.display = "block";
         });
