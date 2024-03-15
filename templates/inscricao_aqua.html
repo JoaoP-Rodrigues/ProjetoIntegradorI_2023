@@ -87,21 +87,36 @@
           var data_nascimento = new Date(this.value);
           var idade = new Date(Date.now() - data_nascimento.getTime()).getUTCFullYear() - 1970;
 
-          if (idade < 7 || idade > 14) {
-            alert("Não é permitida a Incrição de Menores de 7 anos e Maiores de 14 anos!");
+          if (idade < 7) {
+            alert("Não é permitida a Incrição de Menores de 7 anos!");
             this.value = '';
             return;
           }
-
           var turma_select = document.getElementById("turma_select");
-
           if (idade >= 7 && idade <= 14) {
             turma_select.innerHTML = `
                       <option disabled selected value="">Turmas Infantil</option>
-                      <option value="3011">Futsal Infantil - Feminino</option>
-                      <option value="3012">Futsal Infantil - Masculino</option>
+                      <option value="3007">Natação Infantil - TER,QUI - 09:00 às 09:45</option>
+                      <option value="3008">Natação Infantil - TER,QUI - 10:00 às 10:45</option>
+                      <option value="3009">Natação Infantil - QUA,SEX - 09:00 às 09:45</option>
+                      <option value="3010">Natação Infantil - QUA,SEX - 10:00 às 10:45</option>
+                    `;
+          } else if (idade > 14 && idade < 60) {
+            turma_select.innerHTML = `
+                      <option disabled selected value="">Turmas Adulto</option>
+                      <option value="3006">Natação Adulto - TER,QUI - 08:00 às 08:45</option>
+                      <option value="3001">Hidroginástica Adulto - QUA, SEX - 08:00 às 08:45</option>
+                    `;
+          } else {
+            turma_select.innerHTML = `
+                      <option disabled selected value="">Turmas 3ª idade</option>
+                      <option value="3002">Hidroginástica 3ª idade - SEG: 08:00 às 08:45 e TER: 14:00 às 14:45</option>
+                      <option value="3003">Hidroginástica 3ª idade - SEG: 09:00 às 09:45 e QUA: 14:00 às 14:45</option>
+                      <option value="3004">Hidroginástica 3ª idade - SEG: 10:00 às 10:45 e QUI: 14:00 às 14:45</option>
+                      <option value="3005">Hidroginástica 3ª idade - SEG, SEX: 10:00 às 10:45</option>
                     `;
           }
+
           document.getElementById("turma_select_div").style.display = "block";
         });
 

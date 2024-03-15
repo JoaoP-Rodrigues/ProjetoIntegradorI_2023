@@ -1,4 +1,7 @@
-from Databases import DataBase, User
+#from Databases import DataBase, User
+import pdb
+
+from Database import DataBase, Usuario, create_engine_easily
 from datetime import datetime
 from analytics import *
 import os
@@ -11,7 +14,8 @@ from sqlalchemy.orm import sessionmaker
 import hashlib
 
 app = Flask(__name__)
-app.debug=True
+app.debug = True
+
 
 @app.route('/')
 def index():
@@ -67,7 +71,7 @@ def submit():
     address = request.form['endereco']
     phone = request.form['telefone']
     email = request.form['email']
-    turma = request.form['turma_select']
+    turma = int(request.form['turma_select'])
 
     # limpeza dos dados
     cep = cep.translate(str.maketrans('', '', string.punctuation))
@@ -78,21 +82,20 @@ def submit():
 
     obj = DataBase()
     obj.create_connection()
-    post = (cpf, name, born, cep, address, phone, email, turma, protocol)
+    post = (cpf, name, born, cep, address, phone, email, protocol, turma)
     obj.insert_inscritos(post)
-    
 
     if not Validations.check_cpf_db(cpf):
-        flash(f"SUA INSCRIÇÃO FOI REALIZADA COM SUCESSO!<br>ESTE É O SEU PROTOCOLO:{protocol}")
+        flash(f"SUA INSCRIÇÃO FOI REALIZADA COM SUCESSO! ESTE É O SEU PROTOCOLO: {protocol}")
         return render_template('confirm.html')
     else:
-        flash("POR ALGUM MOTIVO, SUA INSCRIÇÃO NÃO FOI REALIZADA.<br>POR FAVOR, TENTE NOVAMENTE DENTRO DE ALGUNS INSTANTES.")
+        flash("POR ALGUM ERRO DESCONHECIDO, SUA INSCRIÇÃO NÃO FOI REALIZADA. POR FAVOR, TENTE NOVAMENTE DENTRO DE ALGUNS INSTANTES.")
         return render_template('confirm.html')
 
 @app.route('/stats/<id_turma>', methods=['GET'])
 def inscritos_por_turma(id_turma):
 
-    inscritos = create_chart()
+    inscritos = organize_inscritos()
 
     if id_turma != 'ALL':
         id_turma = int(id_turma)
@@ -109,7 +112,7 @@ def estatisticas():
     if not session.get('logged_in'):
         return render_template('login.html')
     else:
-        inscritos = create_chart()
+        inscritos = organize_inscritos()
         return render_template('stats.html', tables=[inscritos.to_html(classes='data')], titles=inscritos.columns)
 
 @app.route('/status/<cpf>', methods=['GET'])
@@ -136,7 +139,8 @@ def admin():
 
 @app.route('/login', methods=['POST'])
 def do_admin_login():
-    engine = create_engine('sqlite:///ProjetoIntegradorI_2023/DataBase/Banco_PI.db', echo=True)
+
+    engine = create_engine_easily()
 
     POST_USERNAME = str(request.form['email'])
     POST_PASSWORD = str(request.form['password'])
@@ -145,14 +149,17 @@ def do_admin_login():
     hex_pass = hash_object.hexdigest()
 
     Session = sessionmaker(bind=engine)
-    s = Session()
-    query = s.query(User).filter(User.email.in_([POST_USERNAME]), User.password.in_([hex_pass]) )
-    result = query.first()
-    if result:
+
+    with Session() as session_db:
+        usuario = session_db.query(Usuario).filter(Usuario.email == POST_USERNAME, Usuario.password == hex_pass)
+
+    if usuario:
         session['logged_in'] = True
+        return redirect(url_for('admin'))
     else:
         flash('Senha Incorreta!')
-    return admin()
+        return redirect(url_for('login'))
+    #return admin()
 
 @app.route('/signup')
 def signup():
@@ -193,7 +200,7 @@ def sorteio():
     else:
 
         today = datetime.datetime.today().date()
-        data_sorteio = datetime.datetime(2023, 5, 30).date()
+        data_sorteio = datetime.datetime(2024, 3, 14).date()
 
         if today < data_sorteio:
             data_br = data_sorteio.strftime('%d/%m/%Y')

@@ -8,7 +8,6 @@ from sqlalchemy.orm import sessionmaker
 
 
 class DataBase:
-
     def create_connection(self):
         try:
             path_bd = r'C:/Users/joao_/OneDrive/Documentos2/UNIVESP/04 - Semestre/PI/Projeto_Repositorio/ProjetoIntegradorI_2023/DataBase/Banco_PI.db'
@@ -26,8 +25,8 @@ class DataBase:
         return tuple(columns)
 
     def insert_inscritos(self, values):
-        chaves = self.get_schema('INSCRICOES')
-        query = f'INSERT INTO INSCRICOES {chaves} VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
+        chaves = self.get_schema('Inscricoes')
+        query = f'INSERT INTO Inscricoes {chaves} VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
         self.cur.execute(query, values)
         self.conn.commit()
 
@@ -46,7 +45,7 @@ class DataBase:
         return pd.read_sql_query(query, self.conn)
 
 
-engine = create_engine('sqlite:///ProjetoIntegradorI_2023/DataBase/Banco_PI.db', echo=True)
+engine = create_engine('sqlite:///C:/Users/joao_/OneDrive/Documentos2/UNIVESP/04 - Semestre/PI/Projeto_Repositorio/ProjetoIntegradorI_2023/DataBase/Banco_PI.db', echo=True)
 Base = declarative_base()
 
 ########################################################################
@@ -64,7 +63,7 @@ class User(Base):
         self.name = name
 
     def insert_adm(self, email, password, name):
-        sub_engine = create_engine('sqlite:///ProjetoIntegradorI_2023/DataBase/Banco_PI.db', echo=True)
+        sub_engine = create_engine('sqlite:///C:/Users/joao_/OneDrive/Documentos2/UNIVESP/04 - Semestre/PI/Projeto_Repositorio/ProjetoIntegradorI_2023/DataBase/Banco_PI.db', echo=True)
 
         # create a Session
         Session = sessionmaker(bind=sub_engine)

@@ -1,7 +1,7 @@
-from pycep_correios import get_address_from_cep, WebService, exceptions
-import pycep_correios
-from Databases import DataBase
+import brazilcep
+from Database import DataBase
 import string
+import pdb
 
 class Validations:
 
@@ -32,9 +32,10 @@ class Validations:
 
         cpf_user = cpf_user.translate(str.maketrans('', '', string.punctuation))
 
-        query = f'SELECT CPF FROM INSCRICOES WHERE CPF = "{cpf_user}"'
-        obj.cur.execute(query)
-        resultado = obj.cur.fetchall()
+        query = 'SELECT cpf FROM Inscricoes WHERE cpf = ?'''
+        #pdb.set_trace()
+        obj.cursor.execute(query, cpf_user)
+        resultado = obj.cursor.fetchall()
         if len(resultado) != 0:
             return False
         else:
@@ -46,30 +47,15 @@ class Validations:
 
         cep = cep.translate(str.maketrans('', '', string.punctuation))
         try:
-            address = pycep_correios.get_address_from_cep(cep, webservice=pycep_correios.WebService.APICEP)
-            cidade = address['cidade']
+            address = brazilcep.get_address_from_cep(cep, webservice=brazilcep.WebService.APICEP)
+
+            cidade = address['city']
             if cidade.upper() == 'VALINHOS':
                 return True
             else:
                 return False
-
-        except pycep_correios.exceptions.InvalidCEP as eic:
-            return eic
-
-        except pycep_correios.exceptions.CEPNotFound as ecnf:
-            return ecnf
-
-        except pycep_correios.exceptions.ConnectionError as errc:
-            return errc
-
-        except pycep_correios.exceptions.Timeout as errt:
-            return errt
-
-        except pycep_correios.exceptions.HTTPError as errh:
-            return errh
-
-        except pycep_correios.exceptions.BaseException as e:
-            return e
+        except:
+            return False
 
     @staticmethod
     def get_user(user_mail):
@@ -77,9 +63,9 @@ class Validations:
         obj.create_connection()
 
         user_mail = user_mail.lower()
-        query = f'SELECT email FROM users WHERE email = "{user_mail}"'
-        obj.cur.execute(query)
-        resultado = obj.cur.fetchall()
+        query = 'SELECT email FROM usuarios WHERE email = ?'
+        obj.cursor.execute(query, user_mail)
+        resultado = obj.cursor.fetchall()
 
         if len(resultado) != 0:
             return False
